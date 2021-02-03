@@ -4,6 +4,7 @@ from modules.mixers.vdn import VDNMixer
 from modules.mixers.qmix import QMixer
 import torch as th
 from torch.optim import RMSprop
+from utils.torch_utils import to_cuda
 
 import numpy as np
 
@@ -254,14 +255,14 @@ class RODELearner:
         self.logger.console_logger.info("Updated target network")
 
     def cuda(self):
-        self.mac.cuda()
-        self.target_mac.cuda()
+        to_cuda(self.mac, self.args.device)
+        to_cuda(self.target_mac, self.args.device)
         if self.mixer is not None:
-            self.mixer.cuda()
-            self.target_mixer.cuda()
+            to_cuda(self.mixer, self.args.device)
+            to_cuda(self.target_mixer, self.args.device)
         if self.role_mixer is not None:
-            self.role_mixer.cuda()
-            self.target_role_mixer.cuda()
+            to_cuda(self.role_mixer, self.args.device)
+            to_cuda(self.target_role_mixer, self.args.device)
 
     def save_models(self, path):
         self.mac.save_models(path)

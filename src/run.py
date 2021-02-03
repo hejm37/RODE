@@ -25,6 +25,14 @@ def run(_run, _config, _log):
 
     args = SN(**_config)
     args.device = "cuda" if args.use_cuda else "cpu"
+    set_device = os.getenv('SET_DEVICE')
+    if args.use_cuda and set_device != '-1':
+        if set_device is None:
+            args.device = "cuda"
+        else:
+            args.device = f"cuda:{set_device}"
+    else:
+        args.device = "cpu"
 
     # setup loggers
     logger = Logger(_log)
