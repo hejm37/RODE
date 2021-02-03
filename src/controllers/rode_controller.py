@@ -114,6 +114,14 @@ class RODEMAC:
         self.role_selector.cuda()
         self.action_encoder.cuda()
 
+    def to(self, *args, **kwargs):
+        self.agent.to(*args, **kwargs)
+        self.role_agent.to(*args, **kwargs)
+        for role_i in range(self.n_roles):
+            self.roles[role_i].to(*args, **kwargs)
+        self.role_selector.to(*args, **kwargs)
+        self.action_encoder.to(*args, **kwargs)
+
     def save_models(self, path):
         th.save(self.agent.state_dict(), "{}/agent.th".format(path))
         th.save(self.role_agent.state_dict(), "{}/role_agent.th".format(path))
