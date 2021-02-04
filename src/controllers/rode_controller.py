@@ -4,6 +4,7 @@ from modules.action_encoders import REGISTRY as action_encoder_REGISTRY
 from modules.roles import REGISTRY as role_REGISTRY
 from modules.role_selectors import REGISTRY as role_selector_REGISTRY
 import torch as th
+from torch_utils import to_cuda
 
 from sklearn.cluster import KMeans
 import numpy as np
@@ -148,7 +149,7 @@ class RODEMAC:
                 self.roles.append(role_REGISTRY[self.args.role](self.args))
             self.roles[role_i].update_action_space(self.role_action_spaces[role_i].detach().cpu().numpy())
             if self.args.use_cuda:
-                self.roles[role_i].cuda()
+                to_cuda(self.roles[role_i], self.args.device)
         self.role_selector.load_state_dict(th.load("{}/role_selector.th".format(path),
                                            map_location=lambda storage, loc: storage))
 
@@ -230,7 +231,7 @@ class RODEMAC:
             for _ in range(self.n_roles, n_roles):
                 self.roles.append(role_REGISTRY[self.args.role](self.args))
                 if self.args.use_cuda:
-                    self.roles[-1].cuda()
+                    to_cuda(self.roles[role_i], self.args.device)
 
         self.n_roles = n_roles
 
